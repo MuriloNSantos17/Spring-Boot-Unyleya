@@ -10,11 +10,13 @@ import java.util.List;
 import java.util.Map;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -51,15 +53,21 @@ public class PublicacaoController {
         response.put("deleted",Boolean.TRUE);
         return response;
     }
+    
+    @PutMapping("/publicacoes/{id}")
+    public ResponseEntity<Publicacao> updatePublicacao(@PathVariable(value="id") 
+        Long publicacaoId, @Valid @RequestBody Publicacao publicacaoDetails) throws ResourceNotFoundException{
+        Publicacao publicacao = publicacaoRepository.findById(publicacaoId).orElseThrow(()-> 
+        new ResourceNotFoundException("Publicação não encontrada!"));
+        
+        publicacao.setNomeAutor(publicacaoDetails.getNomeAutor());
+        publicacao.setDoi(publicacaoDetails.getDoi());
+        publicacao.setTitulo(publicacaoDetails.getTitulo());
+        final Publicacao updatedPublicacao = publicacaoRepository.save(publicacao);
+        return ResponseEntity.ok(updatedPublicacao);
+        
+    }
             
     
-    
-    
-    /*
-        @GetMapping("/publicacoes/{id}")
-        public ResponseEntity<Publicacao> getPublicacaoById(@PathVariable(value="id"))
-        throws ResourceNotFoundException{
-            Publicacao publicacao = publicacaoRepository.findBy(publicacaoId).
-        }
-    */
+   
 }
