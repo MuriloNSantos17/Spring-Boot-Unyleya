@@ -35,6 +35,15 @@ public class PublicacaoController {
         return publicacaoRepository.findAll();
     }
     
+    @GetMapping("/publicacoes/{id}")
+    public ResponseEntity<Publicacao> getPublicacaoById(@PathVariable(value="id") 
+    Long publicacaoId) throws ResourceNotFoundException{
+        Publicacao publicacao = publicacaoRepository.findById(publicacaoId)
+        .orElseThrow(()-> new ResourceNotFoundException("Publicação não encontrada"));
+        
+        return ResponseEntity.ok().body(publicacao);
+    }
+    
     @PostMapping("/publicacoes")
     public Publicacao createPublicacao(@Valid @RequestBody Publicacao publicacao){
         publicacao.setId(sequenceGeneratorService.generateSequence(Publicacao.SEQUENCE_NAME));
